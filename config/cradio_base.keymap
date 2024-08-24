@@ -1,4 +1,5 @@
 #include <behaviors.dtsi>
+#include <behaviors/num_word.dtsi> // requires auto-layer module
 #include <dt-bindings/zmk/keys.h>
 #if CONFIG_WIRELESS
     #include <dt-bindings/zmk/bt.h>
@@ -111,14 +112,10 @@ ZMK_BEHAVIOR(smart_num, hold_tap,
     quick-tap-ms = <QUICK_TAP_MS>;
     bindings = <&mo>, <&num_dance>;
 )
-ZMK_BEHAVIOR(num_dance, tap_dance,
+ZMK_TAP_DANCE(num_dance,
     tapping-term-ms = <200>;
-    bindings = <&num_word>, <&sl NUM>;  // reverse this for sticky-num on single tap
+    bindings = <&num_word NUM>, <&sl NUM>;  // reverse this for sticky-num on single tap
 )
-&num_word {  // num-word, requires PR #1451
-    layers = <NUM>;
-    continue-list = <BSPC DEL DOT COMMA PLUS MINUS STAR FSLH EQUAL>;
-};
 
 // smart-mouse, requires PR #1366
 ZMK_BEHAVIOR(smart_mouse, tri_state,
@@ -196,7 +193,7 @@ ZMK_BEHAVIOR(copy_cut, tap_dance,
 
 /* Keymap */
 
-ZMK_CONDITIONAL_LAYER(FN NUM, SYS)  // FN + NUM --> SYS
+ZMK_CONDITIONAL_LAYER(sys, FN NUM, SYS)  // FN + NUM --> SYS
 
 ZMK_LAYER(base,
 //╭──────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭──────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭──────╮

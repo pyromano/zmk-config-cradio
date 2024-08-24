@@ -10,7 +10,7 @@ compatible with Zephyr 3.0 is available
 
 ## Highlights
 
-- clean keymap + unicode setup using helper macros from
+- simple keymap configuration using helper macros from
   [zmk-helpers](https://github.com/urob/zmk-helpers)
 - the base keymap and combo setup are independent of the physical location of
   keys and are re-used for multiple keyboards. The configuration is fit onto
@@ -28,12 +28,10 @@ compatible with Zephyr 3.0 is available
   <kbd>space</kbd> → <kbd>sticky-shift</kbd>
 - "Greek" layer for mathematical typesetting (activated as sticky-layer via a
   combo)
-- modified Github Actions workflow that recognizes git-submodules
-- automated
-  [build-scripts](https://github.com/urob/zmk-config/tree/main/scripts#readme)
-  for local and Docker-based building (independently of VS Code)
+- nix-based [local build environment](#local-development-workspace) -- simply
+  `cd` into your workspace and start building without any setup
 
-![](img/keymap.png)
+![](draw/keymap.png)
 
 ## Timeless homerow mods
 
@@ -53,7 +51,7 @@ Let's suppose for a moment we set `tapping-term-ms` to something ridiculously
 large, say 5 seconds. This makes the configuration timer-less of sorts. But it
 has two problems: (1) To activate a mod we will have to hold the HRM keys for
 what feels like eternity. (2) During regular typing, there are delays between
-the press of a key and the time it appears on the screen.[^3] Enter two my
+the press of a key and the time it appears on the screen.[^3] Enter two of my
 favorite ZMK features:
 
 - To address the first problem, I use ZMK's `balanced` flavor, which produces a
@@ -98,8 +96,8 @@ This is great but there are still a few rough edges:
   false negatives when typing fast.
 
 Here's my configuration (I use a bunch of
-[helper macros](https://github.com/urob/zmk-helpers) to simplify the
-syntax, but they are not necessary):
+[helper macros](https://github.com/urob/zmk-helpers) to simplify the syntax, but
+they are not necessary):
 
 ```C++
 /* use helper macros to define left and right hand keys */
@@ -199,11 +197,11 @@ while also making them easy to remember. Specifically:
 
 Inspired by Jonas Hietala's
 [Numword](https://www.jonashietala.se/blog/2021/06/03/the-t-34-keyboard-layout/#where-are-the-digits)
-for QMK, I implemented my own version of
-[Smart-layers for ZMK](https://github.com/zmkfirmware/zmk/pull/1451). It is
-triggered via a single tap on "Smart-Num". Numword continues to be activated as
-long as I type numbers, and deactivates automatically on any other keypress
-(holding it activates a non-sticky num layer).
+for QMK, I implemented my own
+[Auto-layer behavior](https://github.com/urob/zmk-auto-layer) for ZMK to set up
+Numword. It is triggered via a single tap on "Smart-Num". Numword continues to
+be activated as long as I type numbers, and deactivates automatically on any
+other keypress (holding it activates a non-sticky num layer).
 
 After using Numword for more than a year now, I have been overall very happy
 with it. When typing single digits, it effectively is a sticky-layer but with
@@ -259,6 +257,144 @@ the light chocs, I find that I can now even use them for regular typing. While I
 haven't yet tried placing alphas on combos, I am currently experimenting with a
 `repeat` combo on my home row that I use to reduce SFUs when typing
 double-letter words.
+
+## Local development workspace
+
+I streamline my local build process using `nix`, `direnv` and `just`. This
+automatically sets up a virtual development environment with `west`, the
+`zephyr-sdk` and all its dependencies when `cd`-ing into the ZMK-workspace. The
+environment is _completely isolated_ and won't pollute your system.
+
+### Setup
+
+#### Pre-requisites
+
+1. Install the `nix` package manager:
+
+   ```bash
+   # Install Nix with flake support enabled
+   curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix |
+      sh -s -- install --no-confirm
+
+   # Start the nix daemon without restarting the shell
+   . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+   ```
+
+2. Install [`direnv`](https://direnv.net/) (and optionally but recommended
+   [`nix-direnv`](https://github.com/nix-community/nix-direnv)[^5]) using your
+   package manager of choice. E.g., using the `nix` package manager that we just
+   installed[^6]:
+
+   ```
+   nix profile install nixpkgs#direnv nixpkgs#nix-direnv
+   ```
+
+3. Set up the `direnv` [shell-hook](https://direnv.net/docs/hook.html) for your
+   shell. E.g., for `bash`:
+
+   ```bash
+   # Install the shell-hook
+   echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
+
+   # Enable nix-direnv (if installed in the previous step)
+   mkdir -p ~/.config/direnv
+   echo 'source $HOME/.nix-profile/share/nix-direnv/direnvrc' >> ~/.config/direnv/direnvrc
+
+   # Optional: make direnv less verbose
+   echo '[global]\nwarn_timeout = "2m"\nhide_env_diff = true' >> ~/.config/direnv/direnv.toml
+
+   # Source the bashrc to activate the hook (or start a new shell)
+   source ~/.bashrc
+   ```
+
+#### Set up the workspace
+
+1. Clone _your fork_ of this repository. I like to name my local clone
+   `zmk-workspace` as it will be the toplevel of the development environment.
+
+   ```bash
+   # Replace `urob` with your username
+   git clone https://github.com/urob/zmk-config zmk-workspace
+   ```
+
+2. Enter the workspace and set up the environment.
+
+   ```bash
+   # The first time you enter the workspace, you will be prompted to allow direnv
+   cd zmk-workspace
+
+   # Allow direnv for the workspace, which will set up the environment
+   direnv allow
+
+   # Initialize the Zephyr workspace and pull in the ZMK dependencies
+   # (same as `west init -l config && west update && west zephyr-export`)
+   just init
+   ```
+
+### Usage
+
+After following the steps above your workspace should look like this:
+
+```bash
+zmk-workspace
+├── config
+├── firmware (created after building)
+├── modules
+│   ├── auto-layer
+│   ├── helpers
+│   └── tri-state
+└── zmk
+    └── ...
+```
+
+#### Building the firmware
+
+To build the firmware, simply type `just build all` from anywhere within the
+workspace. This will parse `build.yaml` and build the firmware for all board and
+shield combinations listed there.
+
+To only build the firmware for a specific target, use `just build <target>`.
+This will build the firmware for all matching board and shield combinations. For
+instance, to build the firmware for my Corneish Zen, I can type
+`just build zen`, which builds both `corneish_zen_v2_left` and
+`corneish_zen_v2_right`. (`just list` shows all valid build targets.)
+
+Additional arguments to `just build` are passed on to `west`. For instance, a
+pristine build can be triggered with `just build all -p`.
+
+(For this particular example, there is also a `just clean` recipe, which clears
+the build cache. To list all available recipes, type `just`. Bonus tip: `just`
+provides
+[completion scripts](https://github.com/casey/just?tab=readme-ov-file#shell-completion-scripts)
+for many shells.)
+
+#### Drawing the keymap
+
+The build environment packages
+[keymap-drawer](https://github.com/caksoylar/keymap-drawer). `just draw` parses
+`base.keymap` and draws it to `draw/base.svg`. I haven't gotten around to
+tweaking the output yet, so for now this is just a demonstration of how to set
+things up.
+
+#### Hacking the firmware
+
+To make changes to the ZMK source or any of the modules, simply edit the files
+or use `git` to pull in changes.
+
+To switch to any remote branches or tags, use `git fetch` inside a module
+directory to make the remote refs locally available. Then switch to the desired
+branch with `git checkout <branch>` as usual. You may also want to register
+additional remotes to work with or consider making them the default in
+`config/west.yml`.
+
+#### Updating the build environment
+
+To update the ZMK dependencies, use `just update`. This will pull in the latest
+version of ZMK and all modules specified in `config/west.yml`. Make sure to
+commit and push all local changes you have made to ZMK and the modules before
+running this command, as this will overwrite them.
+
+To upgrade the Zephyr SDK and Python build dependencies, use `just upgrade-sdk`.
 
 ## Issues and workarounds
 
@@ -318,3 +454,14 @@ remaining issues:
     yields a minimum `require-prior-idle-ms` of (60 _ 1000) / (5.7 _ x) ≈ 10500
     / x milliseconds. The approximation errs on the safe side, as in practice
     home row taps tend to be faster than average.
+
+[^5]:
+    `nix-direnv` provides a vastly improved caching experience compared to only
+    having `direnv`, making entering and exiting the workspace instantaneous
+    after the first time.
+
+[^6]:
+    This will permanently install the packages into your local profile, forgoing
+    many of the benefits that make Nix uniquely powerful. A better approach,
+    though beyond the scope of this document, is to use `home-manager` to
+    maintain your user environment.
