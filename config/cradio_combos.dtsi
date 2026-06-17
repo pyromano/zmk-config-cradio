@@ -1,0 +1,41 @@
+/*                KEY POSITIONS
+
+  ╭─────────────────────╮ ╭─────────────────────╮
+  │ LT4 LT3 LT2 LT1 LT0 │ │ RT0 RT1 RT2 RT3 RT4 │
+  │ LM4 LM3 LM2 LM1 LM0 │ │ RM0 RM1 RM2 RM3 RM4 │
+  │ LB4 LB3 LB2 LB1 LB0 │ │ RB0 RB1 RB2 RB3 RB4 │
+  ╰───────╮ LH2 LH1 LH0 │ │ RH0 RH1 RH2 ╭───────╯
+          ╰─────────────╯ ╰─────────────╯ */
+
+#define COMBO_TERM_FAST 18
+#define COMBO_TERM_SLOW 30
+
+#define COMBO_IDLE_FAST 150
+#define COMBO_IDLE_SLOW 50
+
+/* Horizontal combos - left hand */
+// `~ (GRAVE) on LM3 + LM2 (R + T on Graphite)
+ZMK_COMBO(grave_combo, &kp GRAVE, LM3 LM2, DEF NAV, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+
+// Tab (TAB) on LM3 + LM2 + LM1 (R + T + S on Graphite)
+ZMK_COMBO(tab_combo, &kp TAB, LM3 LM2 LM1, DEF NAV, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+
+// Esc (ESC) on LM2 + LM1 (T + S on Graphite)
+ZMK_COMBO(esc_combo, &kp ESC, LM2 LM1, DEF NAV, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+
+// -_ (MINUS) on LB2 + LB1 (M + C on Graphite)
+ZMK_COMBO(minus_combo, &kp MINUS, LB2 LB1, DEF NAV, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+
+
+/* Horizontal combos - right hand */
+// Backspace (BSPC) on RM1 + RM2 (H + A on Graphite)
+ZMK_COMBO(bspc_combo, &bs_word, RM1 RM2, DEF NAV, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+
+// \| (BSLH) on RM1 + RM2 + RM3 (H + A + E on Graphite)
+ZMK_COMBO(bslh_combo, &kp BSLH, RM1 RM2 RM3, DEF NAV, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+
+// '" (SEMICOLON) on RM2 + RM3 (A + E on Graphite)
+ZMK_COMBO(sqt_combo, &kp SEMICOLON, RM2 RM3, DEF NAV, COMBO_TERM_FAST, COMBO_IDLE_FAST)
+
+// =+ (EQUAL) on RB1 + RB2 (P + comma_morph on Graphite)
+ZMK_COMBO(equal_combo, &kp EQUAL, RB1 RB2, DEF NAV, COMBO_TERM_FAST, COMBO_IDLE_FAST)

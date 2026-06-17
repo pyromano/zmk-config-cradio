@@ -1,13 +1,12 @@
 # This file specifies the build dependencies for Github Action workflows and
-# for local build environments. The workspace has three toplevel directories
-# containing the user config, user modules and ZMK. Zephyr and its dependencies
-# are namespaced under /zmk to keep the toplevel clean.
+# for local build environments. The workspace has four toplevel directories
+# containing the user config, modules, zephy and ZMK.
 #
 # ZMK-Workspace
 # ├── config
-# ├── modules (user modules)
+# ├── modules
+# ├── zephyr
 # └── zmk
-#     └── modules (Zephyr modules)
 #
 # To create a local build environment, clone this repository and then run the
 # following commands from its toplevel directory:
@@ -20,32 +19,40 @@
 manifest:
   defaults:
     remote: urob
+    # revision: v0.3 # Pin ZMK version
 
   remotes:
-    - name: upstream
-      url-base: https://github.com/zmkfirmware
     - name: urob
       url-base: https://github.com/urob
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
 
   projects:
-    - name: zmk-helpers
-      revision: main
-      path: modules/helpers
-    - name: zmk-auto-layer
-      revision: main
-      path: modules/auto-layer
-    - name: zmk-tri-state
-      revision: main
-      path: modules/tri-state
-
-    # ZMK with Zephyr namespaced under /zmk. This requires that ZMK imports
-    # Zephyr with a path other than `zephyr` (as in `going-modular`).
     - name: zmk
-      revision: going-modular
-      path: .
-      import:
-        file: app/west.yml
-        path-prefix: zmk
+      remote: zmkfirmware
+      # revision: 0331b7d16e80954b807917f9323e59ffc1e3b626 # main (4/19/2026)
+      revision: v0.3
+      import: app/west.yml
+
+    # ZMK modules
+    - name: zmk-adaptive-key
+      path: modules/zmk/adaptive-key
+      revision: 18cc2795a64ccb394d1a7b7d591a5bfe3f25924b # main (4/19/2026)
+    - name: zmk-auto-layer
+      path: modules/zmk/auto-layer
+      revision: dfa7c695ffde41ef8064245453595d50e198ae1d # main (4/19/2026)
+    - name: zmk-helpers
+      path: modules/zmk/helpers
+      revision: 0b9e9d1dd9e86f70b4c8c2b0fab55c4f90c9d2e3 # main (4/19/2026)
+    - name: zmk-leader-key
+      path: modules/zmk/leader-key
+      revision: 749f7faf65cc4105c82fbe64cfaa7e09a8a63605 # main (4/19/2026)
+    - name: zmk-tri-state
+      path: modules/zmk/tri-state
+      revision: 2007896c6d5bfb519e8babccf8633841c5647d8b # main (4/19/2026)
+    - name: zmk-unicode
+      path: modules/zmk/unicode
+      revision: 1a6dbc797a46c4a61c3c71a7a9d013a5d5aee49e # main (4/19/2026)
 
   self:
     path: config
