@@ -11,3 +11,4 @@ features:
 siblings:
   - cradio_left
   - cradio_right
+  - cradio_dongle

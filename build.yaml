@@ -15,7 +15,11 @@
 include:
   - board: nice_nano_v2
     shield: cradio_left
+    cmake-args: -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=n
   - board: nice_nano_v2
     shield: cradio_right
+    cmake-args: -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=n
   - board: nice_nano_v2
     shield: settings_reset
+  - board: nice_nano_v2
+    shield: cradio_dongle
