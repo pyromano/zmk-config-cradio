@@ -136,11 +136,11 @@ ZMK_LAYER(base,
 //╭──────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭──────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭──────╮
     X_LT     &kp B         &kp L         &kp D         &kp W         &kp Z           X_MT     &kp SQT       &kp F         &kp O         &kp U         &kp J           X_RT
 //├──────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├──────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├──────┤
-    X_LM     &hml LCTRL N  &kp R         &kp T         &kp S         &hml LALT G     X_MM     &hml LALT Y   &kp H         &kp A         &kp E         &hmr RCTRL I    X_RM
+    X_LM     &hml LCTRL N  &hml LALT R   &hml LGUI T   &kp S         &kp G           X_MM     &kp Y         &kp H         &hmr RGUI A   &hml LALT E   &hmr RCTRL I    X_RM
 //├──────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├──────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├──────┤
-    X_LB     &hml LSHFT Q  &hml LGUI X   &kp M         &kp C         &kp V           X_MB     &kp K         &kp P         &kp COMMA     &hmr RGUI DOT &hmr RSHFT FSLH X_RB
+    X_LB     &hml LSHFT Q  &kp X         &kp M         &kp C         &kp V           X_MB     &kp K         &kp P         &kp COMMA     &kp DOT       &hmr RSHFT FSLH X_RB
 //├──────┤ ╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤ ├──────┤ ├─────────────┼─────────────┼─────────────┴───────────────────────────╯ ├──────┤
-    X_LH                                               &mt LSHFT RET &kp TAB         X_MH     &mo FN        &lt_spc NAV 0                                             X_RH
+    X_LH                                               &kp TAB       &mt LSHFT RET   X_MH     &lt_spc NAV 0 &mo FN                                                    X_RH
 //╰──────╯                                           ╰─────────────┴─────────────╯ ╰──────╯ ╰─────────────┴─────────────╯                                           ╰──────╯
 )
 
